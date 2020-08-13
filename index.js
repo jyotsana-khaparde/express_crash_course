@@ -1,7 +1,7 @@
 const express = require('express')
 const path = require('path')
-const members = require('./members')
 const logger = require('./middleware/logger')
+
 
 // create an express application
 const app = express()
@@ -9,24 +9,18 @@ const app = express()
 // init middleware
 app.use(logger)
 
-// GETs all members
-app.get('/api/members', (req, res) => {
-    res.json(members)
-})
+// body parser middleware - to handle raw json
+app.use(express.json())
 
-// GETs single members
-app.get('/api/members/:id', (req, res) => {
-    const fount = members.some(member => member.id === parseInt(req.params.id))
-    if (fount) {
-        res.json(members.filter(member => member.id === parseInt(req.params.id)))
-    } else {
-       res.status(400).json({message: `No member with  the id of ${req.params.id}`}) 
-    }
-})
+// to handle form submissio - so that we can handle url encoded data
+app.use(express.urlencoded({extended: false}))
 
-// use method use to when we want to include middleware
+// use method use, when we want to include middleware
 // set static folder
 app.use(express.static(path.join(__dirname, 'public')))
+
+// members api Route
+app.use('/api/members', require('./routes/api/members'))
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => { 
