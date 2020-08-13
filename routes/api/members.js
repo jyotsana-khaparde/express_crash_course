@@ -24,7 +24,7 @@ router.get('/:id', (req, res) => {
     }
 })
 
-// Create member
+// CREATE member
 router.post('/', (req, res) => {
     const newMember = {
         id: 4,
@@ -37,6 +37,36 @@ router.post('/', (req, res) => {
     } else {
         members.push(newMember)
         res.json(members)
+    }
+})
+
+// UPDATE member
+router.put('/:id', (req, res) => {
+    const fount = members.some(member => member.id === parseInt(req.params.id))
+    if (fount) {
+        const updMember = req.body;
+        members.forEach(member => {
+            if (member.id === parseInt(req.params.id)) {
+                member.name = updMember.name ? updMember.name : member.name
+                member.email = updMember.email ? updMember.email : member.email
+                res.json({message: 'Member updated', member})
+            }
+        })
+    } else {
+       res.status(400).json({message: `No member with  the id of ${req.params.id}`}) 
+    }
+})
+
+// DELETE member
+router.delete('/:id', (req, res) => {
+    const fount = members.some(member => member.id === parseInt(req.params.id))
+    if (fount) {
+        res.json({
+            message: 'Member deleted',
+            members:  members.filter(member => member.id !== parseInt(req.params.id))
+    });
+    } else {
+       res.status(400).json({message: `No member with  the id of ${req.params.id}`}) 
     }
 })
 
