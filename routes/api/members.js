@@ -66,34 +66,25 @@ router.post('/', (req, res) => {
 
 // UPDATE member
 router.put('/:id', (req, res) => {
-    MemberModel.find((error, docs) => {
-        if (!error) {
-            console.log('docs->', docs)
-            console.log('req.params.id :', req.params.id);
-            const fount = docs.some(member => member.id === req.params.id)
-            console.log('fount:', fount);
-            if (fount) {
-                const updMember = req.body;
-                docs.forEach(member => {
-                    if (member.id === req.params.id) {
-                        member.name = updMember.name ? updMember.name : member.name
-                        member.email = updMember.email ? updMember.email : member.email
-                        member.save((error, docs) => {
+    MemberModel.findOne({id: req.params.id}, (error, result) => {
+        if(error) {
+            res.status(500).json({message: error})
+        } else {
+            if(!result) {
+                res.status(404).json({message: `No member with  the id of ${req.params.id}`})
+            } else {
+                result.name = req.body.name ? req.body.name : result.name
+                result.email = req.body.email ? req.body.email : result.email
+                result.save((error, docs) => {
                         if(!error) {
-                            res.json({message: 'Member updated', member})
+                            res.json({message: 'Member updated', docs})
                         } else {
                             res.json('Error Occured')
                         }
-                    })
-                    }
                 })
-            } else {
-                res.status(400).json({message: `No member with  the id of ${req.params.id}`}) 
             }
-        } else {
-            console.log('UPDATE member error -> ', error);
         }
-    })    
+    })
 })
 
 // DELETE member
