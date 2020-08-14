@@ -17,3 +17,14 @@ let memberSchema = new mongooes.Schema({
 })
 
 mongooes.model("members", memberSchema)
+
+let schoolSchema = new mongooes.Schema({
+    schoolName: {
+        type: String
+    },
+    className: {
+        type: String
+    },
+})
+
+mongooes.model("school", schoolSchema)

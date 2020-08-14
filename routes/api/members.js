@@ -4,6 +4,27 @@ const uuid = require('uuid')
 const mongooes = require('mongoose')
 const logger = require('../../middleware/logger')
 const MemberModel = mongooes.model('members')
+const SchoolModel = mongooes.model('school')
+
+
+// CREATE member
+router.post('/createSchool', (req, res) => {
+    console.log('req--->', req.body);
+    let school = new SchoolModel();
+    school.schoolName = req.body.schoolName
+    school.className = req.body.className
+    if(!school.schoolName || !school.className) {
+        res.status(400).json({message: 'Please include schoolName and className'})
+    } else {
+        school.save((error, docs) => {
+        if(!error) {
+            res.json(school)
+        } else {
+            res.json('Error Occured')
+        }
+    })
+    }
+})
 
 /**
  * GETs all members 
@@ -12,8 +33,9 @@ const MemberModel = mongooes.model('members')
  * instead we can use app.get('/') and app.get('/:id')
  * 2. previously we (use app.get) but when we use router we can us (router.get)
  */
+
+// Getting all members
 router.get('/', (req, res) => {
-    //Getting
     MemberModel.find((error, docs) => {
         if (!error) {
             console.log('docs->', docs)
