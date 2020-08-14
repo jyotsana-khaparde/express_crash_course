@@ -1,6 +1,5 @@
 const express = require('express')
 const router = express.Router()
-const members = require('../../members')
 const uuid = require('uuid')
 const mongooes = require('mongoose')
 const logger = require('../../middleware/logger')
